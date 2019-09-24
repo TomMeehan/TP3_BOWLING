@@ -6,11 +6,17 @@ package bowling;
  * final de ce joueur
  */
 public class SinglePlayerGame {
+    
+        private int score;
+        private Round round;
+        
 
 	/**
 	 * Constructeur
 	 */
 	public SinglePlayerGame() {
+            this.score = 0;
+            this.round = new Round(0,0,0);
 	}
 
 	/**
@@ -20,7 +26,33 @@ public class SinglePlayerGame {
 	 * ce lancé
 	 */
 	public void lancer(int nombreDeQuillesAbattues) {
+            
+            int turnScore = nombreDeQuillesAbattues;
+            
+                  
+            switch (this.round.getState()){
+                case SPARE:
+                    turnScore *= 2;
+                    this.round.setState(State.NORMAL);
+                    break;
+                case STRIKE:
+                    turnScore *=2;
+                    if (this.round.getBowl() == 1)
+                        this.round.setState(State.NORMAL);
+                    break;
 
+                default:
+                    break;
+            }
+            
+            this.round.updateState(nombreDeQuillesAbattues);
+            
+            this.score += turnScore;
+            
+            if (this.round.getBowl() == 0 && this.round.getState()!= State.STRIKE)
+                this.round.nextBowl();
+            else
+                this.round.nextTurn();
 	}
 
 	/**
@@ -29,6 +61,6 @@ public class SinglePlayerGame {
 	 * @return Le score du joueur
 	 */
 	public int score() {
-		throw new UnsupportedOperationException("Pas encore implémenté");
+		return this.score;
 	}
 }
