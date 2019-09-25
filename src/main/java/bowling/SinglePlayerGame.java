@@ -105,8 +105,4 @@ public class SinglePlayerGame {
             
             return tempScore;
 	}
-        
-        public Round[] getRounds(){
-            return this.rounds;
-        }
 }
