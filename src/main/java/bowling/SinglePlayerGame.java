@@ -40,6 +40,7 @@ public class SinglePlayerGame {
                 currentRound.setBowl1(nombreDeQuillesAbattues);
                 
                 if (nombreDeQuillesAbattues == 10 && currentTurn < this.TURNS){
+                    
                     currentRound.setState(State.STRIKE);
                     currentRound.setFinished(true);
                 }
