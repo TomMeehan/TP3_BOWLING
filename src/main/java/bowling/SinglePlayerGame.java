@@ -7,16 +7,22 @@ package bowling;
  */
 public class SinglePlayerGame {
     
-        private int score;
-        private Round round;
+        private final int TURNS = 10;
+        private final int EXTRA_TURNS = 1;
         
+        private int score;
+        private Round[] rounds;
+        private int currentTurn;
+        private int currentBowl;
 
 	/**
 	 * Constructeur
 	 */
 	public SinglePlayerGame() {
             this.score = 0;
-            this.round = new Round(0,0,0);
+            this.rounds = new Round[TURNS + EXTRA_TURNS];
+            this.currentTurn = 0;
+            this.currentBowl = 0;
 	}
 
 	/**
@@ -26,33 +32,39 @@ public class SinglePlayerGame {
 	 * ce lancé
 	 */
 	public void lancer(int nombreDeQuillesAbattues) {
+            Round currentRound;
             
-            int turnScore = nombreDeQuillesAbattues;
-            
-                  
-            switch (this.round.getState()){
-                case SPARE:
-                    turnScore *= 2;
-                    this.round.setState(State.NORMAL);
-                    break;
-                case STRIKE:
-                    turnScore *=2;
-                    if (this.round.getBowl() == 1)
-                        this.round.setState(State.NORMAL);
-                    break;
-
-                default:
-                    break;
+            if(this.currentBowl == 0){ 
+                currentRound = new Round();
+                
+                currentRound.setBowl1(nombreDeQuillesAbattues);
+                
+                if (nombreDeQuillesAbattues == 10){
+                    currentRound.setState(State.STRIKE);
+                }
             }
+            else{
+                currentRound = this.rounds[this.currentTurn];
+                currentRound.setBowl2(nombreDeQuillesAbattues);
+                
+                if (nombreDeQuillesAbattues + currentRound.getBowl1() == 10)
+                    currentRound.setState(State.SPARE);
+                else
+                    currentRound.setState(State.NORMAL);
+                
+                currentRound.setRoundScore(currentRound.getBowl1() + currentRound.getBowl2());
+                
+            }
+            if (currentTurn == this.TURNS) currentRound.setState(State.EXTRA);
             
-            this.round.updateState(nombreDeQuillesAbattues);
             
-            this.score += turnScore;
             
-            if (this.round.getBowl() == 0 && this.round.getState()!= State.STRIKE)
-                this.round.nextBowl();
-            else
-                this.round.nextTurn();
+            this.rounds[this.currentTurn] = currentRound;
+            
+            if(this.currentBowl == 1 && 
+                    (this.currentTurn < this.TURNS || (currentRound.getState() != State.EXTRA)))
+                    currentTurn ++;
+            this.currentBowl = 1 - this.currentBowl;
 	}
 
 	/**
@@ -61,6 +73,23 @@ public class SinglePlayerGame {
 	 * @return Le score du joueur
 	 */
 	public int score() {
-		return this.score;
+            int tempScore = 0;
+            
+            for( int i = 0; i < this.TURNS; i++){
+                
+                Round currRound = this.rounds[i];
+                tempScore += currRound.getRoundScore();
+                
+                if (currRound.getState() == State.SPARE)
+                    tempScore += this.rounds[i+1].getBowl1();
+                else if (currRound.getState() == State.STRIKE){
+                    tempScore += this.rounds[i+1].getRoundScore();
+                    if (this.rounds[i+1].getState() == State.STRIKE){   
+                        tempScore += this.rounds[i+2].getBowl1();
+                    }
+                }
+            }
+            
+            return tempScore;
 	}
 }

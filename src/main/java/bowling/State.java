@@ -10,5 +10,5 @@ package bowling;
  * @author pedago
  */
 public enum State{
-    NORMAL, SPARE, STRIKE
+    TBD,NORMAL, SPARE, STRIKE,EXTRA
 }
