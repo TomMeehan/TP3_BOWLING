@@ -16,12 +16,23 @@ public class Round {
     private int bowl2;
     private int roundScore;
     private State state;
+    private boolean finished;
+
     
     public Round(){
         this.bowl1 = -1;
         this.bowl2 = -1;
         this.roundScore = -1;
         this.state = State.TBD;
+        this.finished = false;
+    }
+    
+    public boolean isFinished() {
+        return finished;
+    }
+
+    public void setFinished(boolean finished) {
+        this.finished = finished;
     }
     
     public int getBowl1() {

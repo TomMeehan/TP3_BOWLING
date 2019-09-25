@@ -39,9 +39,15 @@ public class SinglePlayerGame {
                 
                 currentRound.setBowl1(nombreDeQuillesAbattues);
                 
-                if (nombreDeQuillesAbattues == 10){
+                if (nombreDeQuillesAbattues == 10 && currentTurn < this.TURNS){
                     currentRound.setState(State.STRIKE);
+                    currentRound.setFinished(true);
                 }
+                else 
+                    this.currentBowl ++;
+                
+                currentRound.setRoundScore(currentRound.getBowl1());
+
             }
             else{
                 currentRound = this.rounds[this.currentTurn];
@@ -52,7 +58,9 @@ public class SinglePlayerGame {
                 else
                     currentRound.setState(State.NORMAL);
                 
-                currentRound.setRoundScore(currentRound.getBowl1() + currentRound.getBowl2());
+                currentRound.setRoundScore(currentRound.getRoundScore() + currentRound.getBowl2());
+                
+                currentRound.setFinished(true);
                 
             }
             if (currentTurn == this.TURNS) currentRound.setState(State.EXTRA);
@@ -61,10 +69,13 @@ public class SinglePlayerGame {
             
             this.rounds[this.currentTurn] = currentRound;
             
-            if(this.currentBowl == 1 && 
-                    (this.currentTurn < this.TURNS || (currentRound.getState() != State.EXTRA)))
-                    currentTurn ++;
-            this.currentBowl = 1 - this.currentBowl;
+            if(currentRound.isFinished() && currentTurn < this.TURNS){
+                currentTurn ++;
+                this.currentBowl = 0;
+            }
+                   
+            
+            
 	}
 
 	/**
@@ -73,6 +84,7 @@ public class SinglePlayerGame {
 	 * @return Le score du joueur
 	 */
 	public int score() {
+            
             int tempScore = 0;
             
             for( int i = 0; i < this.TURNS; i++){
@@ -92,4 +104,8 @@ public class SinglePlayerGame {
             
             return tempScore;
 	}
+        
+        public Round[] getRounds(){
+            return this.rounds;
+        }
 }

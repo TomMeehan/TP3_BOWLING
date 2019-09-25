@@ -42,7 +42,7 @@ public class SinglePlayerGameTest {
 
 	@Test
 	public void testOneStrike()  {
-		rollStrike(); // 10 + 7
+		rollStrike(); // 10 + 7          
 		game.lancer(3);
 		game.lancer(4);
 		rollMany(16, 0);
@@ -63,7 +63,6 @@ public class SinglePlayerGameTest {
 		rollSpare(); // 10 + 0
 		rollMany(6, 0); // 0 points aux 3 tours suivants
 		rollMany(3, 10); // 30 points au dernier tour
-
 		assertEquals(84, game.score());
 	}
 
